@@ -44,7 +44,7 @@ void Pool<T, BLOCK_SIZE>::Reserve(size_t n) {
 template <typename T, size_t BLOCK_SIZE>
 void Pool<T, BLOCK_SIZE>::FastClear() {
     for (auto block : blocks)
-#ifdef WIN32
+#ifdef _WIN32
         _aligned_free(block);
 #else
         free(block);
@@ -66,7 +66,7 @@ void Pool<T, BLOCK_SIZE>::Clear() {
             if (freeAdrSets.find(adress) == freeAdrSets.end())
                 adress->~T();
         }
-#ifdef WIN32
+#ifdef _WIN32
         _aligned_free(block);
 #else
         free(block);
@@ -78,7 +78,7 @@ void Pool<T, BLOCK_SIZE>::Clear() {
 
 template <typename T, size_t BLOCK_SIZE>
 void Pool<T, BLOCK_SIZE>::NewBlock() {
-#ifdef WIN32
+#ifdef _WIN32
     auto block = reinterpret_cast<T*>(_aligned_malloc(BLOCK_SIZE * sizeof(T), std::alignment_of_v<T>));
 #else
     auto block = reinterpret_cast<T*>(aligned_alloc(BLOCK_SIZE * sizeof(T), std::alignment_of_v<T>));

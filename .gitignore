@@ -1,0 +1,9 @@
+# DAW config
+.vs
+.vscode
+
+# Default target folder
+build
+bin
+
+# 3rd Library

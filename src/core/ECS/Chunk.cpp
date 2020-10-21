@@ -21,11 +21,12 @@ Chunk::Layout Chunk::GenLayout(const std::vector<size_t>& alignments,
     size_t sumSize = 0;
     for (size_t s : sizes)
         sumSize += s;
-    layout.capacity = 32 / sumSize;
+    layout.capacity = CHUNK_SIZE / sumSize;
 
     layout.offsets.resize(SIZE);
     size_t curOffset = 0;
     for (size_t i = 0; i < SIZE; i++) {
+        // How It Works ??
         curOffset = items[i].align * ((curOffset + items[i].align - 1) / items[i].align);
         layout.offsets[items[i].idx] = curOffset;
         curOffset += sizes[items[i].idx] * layout.capacity;

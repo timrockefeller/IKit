@@ -1,14 +1,16 @@
 #pragma once
 
+#include "EntityManager.h"
+#include "SystemManager.h"
 namespace KTKR::ECS {
-class EntityManager;
 class World {
    public:
+    World()=default;
+    World(const World&)  {}
     EntityManager entityManager;
+    // SystemManager systemManager;
 
    private:
-   public:
-    World()=default;
 };
 
 }  // namespace KTKR::ECS

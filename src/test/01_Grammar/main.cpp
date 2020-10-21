@@ -1,13 +1,12 @@
+#include <IKit/ECS/details/Chunk.h>
 #include <iostream>
 using namespace std;
+using namespace KTKR::ECS;
 int main() {
-    size_t n = 1024;
-
-    size_t ou1 = static_cast<size_t>(n % -3 > 0);
-
-    size_t ou2 = n % -3 > 0;
-
-    cout << ou1 << " " << ou2;
-
+    Chunk::Layout layout = Chunk::GenLayout({1, 1, 2, 3, 4, 4, 8}, {1, 1, 2, 3, 3, 4, 7});
+    // align:  1, 1, 2, 3, 4, 4, 8
+    // size:   1, 1, 2, 3, 3, 4, 7
+    // offset: 0, 1, 2, 6,12,16,24
+    layout.DebugLog();
     return 0;
 }

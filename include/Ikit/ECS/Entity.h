@@ -1,4 +1,5 @@
 #pragma once
+
 namespace KTKR::ECS {
 class Entity {
    public:
@@ -22,6 +23,8 @@ class Entity {
     }
 
    private:
+    friend class EntityManager;
+
     size_t idx;
     size_t version;
 };

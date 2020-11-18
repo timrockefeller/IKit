@@ -1,23 +1,31 @@
 #pragma once
 
+#include <Ikit/Template/TypeID.h>
 #include <set>
+#include "ComponentTag.h"
 /*
     Component Type
 */
 namespace KTKR::ECS {
 class ComponentType {
+   public:
    private:
     size_t hash;
 
    public:
-    ComponentType(/* args */);
-    ~ComponentType();
+    explicit constexpr ComponentType(size_t id) noexcept
+        : hash{id} {}
+    explicit constexpr ComponentType() noexcept
+        : ComponentType{Invalid()} {}
 
     constexpr size_t Hash() const noexcept { return hash; }
 
+    static constexpr ComponentType Invalid() noexcept { return ComponentType{static_cast<size_t>(-1)}; }
+    constexpr bool Valid() const noexcept { return hash == static_cast<size_t>(-1); }
+
     template <typename Cmpt>
     constexpr bool Is() const noexcept {
-        static_assert(!IsTaggedCmpt_v<Cmpt>);
+        // static_assert(!IsTaggedCmpt_v<Cmpt>);
         return hash == TypeID<Cmpt>;
     }
 
@@ -30,10 +38,10 @@ class ComponentType {
 };
 
 class ComponentTypeOb {
-   
-   
    public:
-   /** @brief operations */
+    constexpr AccessMode GetAccessMode() const noexcept { return mode; }
+
+    /** @brief operations */
     constexpr bool operator<(const ComponentTypeOb& rhs) const noexcept { return type < rhs.type; }
     constexpr bool operator<=(const ComponentTypeOb& rhs) const noexcept { return type <= rhs.type; }
     constexpr bool operator>(const ComponentTypeOb& rhs) const noexcept { return type > rhs.type; }
@@ -55,6 +63,7 @@ class ComponentTypeOb {
 
    private:
     ComponentType type;
+    AccessMode mode;
 };
 using ComponentTypeObSet = std::set<ComponentTypeOb, std::less<>>;
 }  // namespace KTKR::ECS

@@ -26,3 +26,9 @@ link_directories (
 )
 
 IK_AddSubDirsRec(src)
+
+IK_Export(
+  TARGET
+  DIRECTORIES
+    "include"
+)

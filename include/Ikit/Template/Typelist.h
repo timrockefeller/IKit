@@ -33,6 +33,11 @@ struct At;
 template <typename List, size_t N>
 using At_t = typename At<List, N>::type;
 
+template <typename List, size_t... Indices>
+struct Select;
+template <typename List, size_t... Indices>
+using Select_t = typename Select<List, Indices>::type;
+
 template <typename List>
 struct PopFront;
 template <typename List>
@@ -81,12 +86,19 @@ template <typename List, size_t N>
 struct At : At<PopFront_t<List>, N - 1> {};
 
 // =================================================
+
 template <typename Head, typename... Tail>
 struct PopFront<TypeList<Head, Tail...>> : IType<TypeList<Tail...>> {};
 
 // =================================================
+
 template <typename List, typename T>
 struct Find : Private::Typelist::Find<List, T> {};
+
+// =================================================
+
+template <typename List, size_t... Indices>
+struct Select : IType<TypeList<At_t<List, Indices>...>> {};
 
 }  // namespace KTKR
 

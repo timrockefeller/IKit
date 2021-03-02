@@ -39,7 +39,18 @@ class ComponentType {
 
 class ComponentTypeOb {
    public:
+    constexpr ComponentTypeOb(size_t id, AccessMode mode) noexcept
+        : type{id}, mode{mode} {}
+    constexpr ComponentTypeOb(ComponentType type, AccessMode mode) noexcept
+        : type{type}, mode{mode} {}
+    explicit constexpr ComponentTypeOb(ComponentType type) noexcept
+        : ComponentTypeOb{type, AccessMode::EXCLUDE} {}
+    explicit constexpr ComponentTypeOb() noexcept
+        : ComponentTypeOb{Invalid()} {}
+
     constexpr AccessMode GetAccessMode() const noexcept { return mode; }
+    static constexpr ComponentTypeOb Invalid() noexcept { return ComponentTypeOb{static_cast<size_t>(-1), AccessMode::EXCLUDE}; }
+    constexpr bool Valid() const noexcept { return type.Valid(); }
 
     /** @brief operations */
     constexpr bool operator<(const ComponentTypeOb& rhs) const noexcept { return type < rhs.type; }

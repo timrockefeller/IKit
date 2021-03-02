@@ -7,8 +7,9 @@ class World {
    public:
     World()=default;
     World(const World&)  {}
+
     EntityManager entityManager;
-    // SystemManager systemManager;
+    SystemManager systemManager;
 
    private:
 };

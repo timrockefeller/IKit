@@ -34,18 +34,24 @@ function(IK_GlobGroupSrcs)
 	cmake_parse_arguments("ARG" "" "RST" "PATHS" ${ARGN})
 	set(SOURCES "")
 	foreach(path ${ARG_PATHS})
-		file(GLOB_RECURSE pathSources
-			"${path}/*.h"
-			"${path}/*.hpp"
-			"${path}/*.inl"
-			"${path}/*.c"
-			"${path}/*.cc"
-			"${path}/*.cpp"
-			"${path}/*.cxx"
-		)
-		list(APPEND SOURCES ${pathSources})
-    endforeach()
-    IK_UnityArgs(SOURCES ${SOURCES})
+    if(IS_DIRECTORY ${path})
+      file(GLOB_RECURSE pathSources
+        ${path}/*.h
+        ${path}/*.hpp
+        ${path}/*.inl
+        ${path}/*.c
+        ${path}/*.cc
+        ${path}/*.cpp
+        ${path}/*.cxx
+      )
+      list(APPEND SOURCES ${pathSources})
+      endforeach()
+    else()
+      if(NOT IS_ABSOLUTE "${path}")
+        get_filename_component(path "${path}" ABSOLUTE)
+      endif()
+      list(APPEND SOURCES ${path})
+    endif()
 	set(${ARG_RST} ${SOURCES} PARENT_SCOPE)
 endfunction()
 

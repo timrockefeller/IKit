@@ -87,7 +87,7 @@ macro (IK_Export)
   IK_PackageName(package_name)
   message(STATUS "export ${package_name}")
 
-  set(UBPA_PACKAGE_INIT "
+  set(IK_PACKAGE_INIT "
 get_filename_component(include_dir \"\${CMAKE_CURRENT_LIST_DIR}/../include\" ABSOLUTE)
 include_directories(\"\${include_dir}\")\n")
 

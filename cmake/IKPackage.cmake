@@ -1,3 +1,6 @@
+
+set(IK_${PROJECT_NAME}_havedep FALSE)
+
 function(IK_AddSubDirsRec path)
   message(STATUS "----------")
   file(GLOB_RECURSE children LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/${path}/*)
@@ -131,6 +134,8 @@ include_directories(\"\${include_dir}\")\n")
     DESTINATION "${package_name}/cmake"
   )
   
+  set(${package_name}_DIR "${package_name}/cmake")
+
   foreach(dir ${ARG_DIRECTORIES})
     string(REGEX MATCH "(.*)/" prefix ${dir})
     if("${CMAKE_MATCH_1}" STREQUAL "")

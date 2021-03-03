@@ -59,10 +59,10 @@ void strcd() {
     int b;
     const auto l = [i = 0, a = b] {};
     /* ↑ 等价于 ↓ */
-    struct anonymous {
-        int i = 0, a;
-        anonymous(int b)
-            : a{b} {}
-        auto operator()() const {}
-    } l{b};
+    // struct anonymous {
+    //     int i = 0, a;
+    //     anonymous(int b)
+    //         : a{b} {}
+    //     auto operator()() const {}
+    // } l{b};
 }

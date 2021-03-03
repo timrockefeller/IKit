@@ -1,12 +1,6 @@
-## For main extry file project
-set(MODE "EXE")
-set(TARGET_NAME "TEST_01_Grammar")
-IK_UnityArgs(STR_TARGET_SOURCES
-    # sources, headfiles
-    "main.cpp"
+IK_GetTargetName(core "${PROJECT_SOURCE_DIR}/src/core")
+IK_AddTarget(
+    TEST
+    MODE EXE
+    LIB "${core}"
 )
-IK_UnityArgs(STR_TARGET_LIBS
-    # libs
-    IKit
-)
-IK_SetupProject(${MODE} ${TARGET_NAME} ${STR_TARGET_SOURCES} ${STR_TARGET_LIBS})

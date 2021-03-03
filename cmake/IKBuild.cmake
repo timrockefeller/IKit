@@ -27,27 +27,48 @@ macro(IK_SetupProject MODE TARGET_NAME STR_TARGET_SOURCES STR_TARGET_LIBS)
       if(NOT ${STR_TARGET_LIBS} STREQUAL " ")
         target_link_libraries( ${TARGET_NAME} ${LIST_TARGET_LIBS} )
       endif()
-      install(TARGETS ${targetName}
-        EXPORT "${TARGET_NAME}Targets"
-        RUNTIME DESTINATION "bin"
-        ARCHIVE DESTINATION "${package_name}/lib"
-        LIBRARY DESTINATION "${package_name}/lib"
-      )
       message(STATUS "Setup Target ${FOLDER_NAME}/[${TARGET_NAME}] success")
     endif()
   endif()
 endmacro()
 
+
+function(IK_GlobGroupSrcs rst _sources)
+	set(tmp_rst "")
+	foreach(path ${${_sources}})
+    if(IS_DIRECTORY ${path})
+      file(GLOB_RECURSE pathSources
+        ${path}/*.h
+        ${path}/*.hpp
+        ${path}/*.inl
+        ${path}/*.c
+        ${path}/*.cc
+        ${path}/*.cpp
+        ${path}/*.cxx
+      )
+      list(APPEND tmp_rst ${pathSources})
+    else()
+      if(NOT IS_ABSOLUTE "${path}")
+        get_filename_component(path "${path}" ABSOLUTE)
+      endif()
+      list(APPEND tmp_rst ${path})
+    endif()
+  endforeach()
+	set(${rst} ${tmp_rst} PARENT_SCOPE)
+endfunction()
+
+
 function(IK_GetTargetName out targetPath)
   file(RELATIVE_PATH targetRelPath "${PROJECT_SOURCE_DIR}/src" "${targetPath}")
-  string(REPLACE "/" "_" targetName "${PROJECT_NAME}_${targetRelPath}")
-  set(${out} ${targetName} PARENT_SCOPE)
+  string(REPLACE "/" "_" target_name "${PROJECT_NAME}_${targetRelPath}")
+  set(${out} ${target_name} PARENT_SCOPE)
 endfunction()
 
 
 function(IK_AddTarget)
   # [option]
   # TEST
+  # NOT_HERE
   # [value]
   # MODE: EXE / STATIC / SHARED / INTERFACE
   # ADD_CURRENT_TO: PUBLIC / INTERFACE / PRIVATE (default) / NONE
@@ -59,7 +80,7 @@ function(IK_AddTarget)
   # LIB: <lib-target> | *.lib
   # C_OPTION: compile options
   # L_OPTION: link options
-  message(STATUS "┌──────────┐")
+  message(STATUS "┌────────────────────────────────────────────────┐")
   set(arglist "")
 
   # publics
@@ -71,18 +92,16 @@ function(IK_AddTarget)
 
   cmake_parse_arguments(
     "ARG"
-    "TEST"
+    "TEST;NOT_HERE"
     "MODE;ADD_CURRENT_TO;OUTPUT_NAME;TARGET_NAME;RET_TARGET_NAME"
     "${arglist}"
     ${ARGN}
   )
-
   
   # default
   if("${ARG_ADD_CURRENT_TO}" STREQUAL "")
     set(ARG_ADD_CURRENT_TO "PRIVATE")
   endif()
-
 
   if("${ARG_MODE}" STREQUAL "INTERFACE")
     list(APPEND ARG_SRC_INT       ${ARG_SRC_PUB}      ${ARG_SRC}          )
@@ -120,12 +139,32 @@ function(IK_AddTarget)
   IK_GlobGroupSrcs(sources_interface ARG_SRC_INT)
   IK_GlobGroupSrcs(sources_private ARG_SRC)
 
+  if(NOT NOT_HERE)
+    set(all_sources ${sources_public} ${sources_interface} ${sources_private})
+    foreach(src ${allsources})
+      get_filename_component(dir ${src} DIRECTORY)
+      string(FIND ${dir} ${CMAKE_CURRENT_SOURCE_DIR} idx)
+      if(NOT idx EQUAL -1)
+        set(base_dir "${CMAKE_CURRENT_SOURCE_DIR}/..")
+        file(RELATIVE_PATH rdir "${CMAKE_CURRENT_SOURCE_DIR}/.." ${dir})
+      else()
+        set(base_dir ${PROJECT_SOURCE_DIR})
+      endif()
+      file(RELATIVE_PATH rdir ${base_dir} ${dir})
+      if(MSVC)
+        string(REPLACE "/" "\\" rdir_MSVC ${rdir})
+        set(rdir "${rdir_MSVC}")
+      endif()
+      source_group(${rdir} FILES ${src})
+    endforeach()
+  endif()
+
   # target folder
   file(RELATIVE_PATH targetRelPath "${PROJECT_SOURCE_DIR}/src" "${CMAKE_CURRENT_SOURCE_DIR}/..")
   set(target_folder "${PROJECT_NAME}/${targetRelPath}")
 
   # target name
-  if(NOT "${ARG_TARGET_NAME}" STREQUAL "")
+  if("${ARG_TARGET_NAME}" STREQUAL "")
     IK_GetTargetName(target_name ${CMAKE_CURRENT_SOURCE_DIR})
   else()
     set(target_name ${ARG_TARGET_NAME})
@@ -135,7 +174,7 @@ function(IK_AddTarget)
   endif()
 
   IK_PackageName(package_name)
-
+  message(STATUS "target: [${target_name}] in [${package_name}]")
   # add target
   if("${ARG_MODE}" STREQUAL "EXE")
     add_executable(${target_name})
@@ -211,18 +250,18 @@ function(IK_AddTarget)
   )
 
   if(NOT "${ARG_OUTPUT_NAME}" STREQUAL "")
-    set_target_properties(${targetName} PROPERTIES OUTPUT_NAME "${ARG_OUTPUT_NAME}" CLEAN_DIRECT_OUTPUT 1)
+    set_target_properties(${target_name} PROPERTIES OUTPUT_NAME "${ARG_OUTPUT_NAME}" CLEAN_DIRECT_OUTPUT 1)
   endif()
 
   # export
   if(NOT ARG_TEST)
     install(
-      TARGET ${target_name}
+      TARGETS ${target_name}
       EXPORT "${PROJECT_NAME}Targets"
       RUNTIME DESTINATION "bin"
       ARCHIVE DESTINATION "${package_name}/lib"
       LIBRARY DESTINATION "${package_name}/lib"
     )
   endif()
-  message(STATUS "└────────────┘")
+  message(STATUS "└────────────────────────────────────────────────┘")
 endfunction()

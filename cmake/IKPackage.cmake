@@ -30,39 +30,6 @@ function(IK_UnityArgs)
     set(${ARGV0} ${ARGLIST} PARENT_SCOPE)
 endfunction(IK_UnityArgs)
 
-function(IK_GlobGroupSrcs)
-	cmake_parse_arguments("ARG" "" "RST" "PATHS" ${ARGN})
-	set(SOURCES "")
-	foreach(path ${ARG_PATHS})
-    if(IS_DIRECTORY ${path})
-      file(GLOB_RECURSE pathSources
-        ${path}/*.h
-        ${path}/*.hpp
-        ${path}/*.inl
-        ${path}/*.c
-        ${path}/*.cc
-        ${path}/*.cpp
-        ${path}/*.cxx
-      )
-      list(APPEND SOURCES ${pathSources})
-      endforeach()
-    else()
-      if(NOT IS_ABSOLUTE "${path}")
-        get_filename_component(path "${path}" ABSOLUTE)
-      endif()
-      list(APPEND SOURCES ${path})
-    endif()
-	set(${ARG_RST} ${SOURCES} PARENT_SCOPE)
-endfunction()
-
-### Setup Target
-##  TODO setup target with less options, seperate by extensions
-## 
-
-function(IK_SetupTarget)
-
-endfunction()
-
 function(IK_ThisToPackageName out name version)
   set(tmp "${name}.${version}")
   string(REPLACE "." "_" tmp ${tmp})

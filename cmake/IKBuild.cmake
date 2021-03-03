@@ -174,7 +174,7 @@ function(IK_AddTarget)
   endif()
 
   IK_PackageName(package_name)
-  message(STATUS "target: [${target_name}] in [${package_name}]")
+  message(STATUS " Building target [${target_name}] in package [${package_name}]")
   # add target
   if("${ARG_MODE}" STREQUAL "EXE")
     add_executable(${target_name})
@@ -263,5 +263,6 @@ function(IK_AddTarget)
       LIBRARY DESTINATION "${package_name}/lib"
     )
   endif()
+  message(STATUS " Project: ${PROJECT_NAME}")
   message(STATUS "└────────────────────────────────────────────────┘")
 endfunction()

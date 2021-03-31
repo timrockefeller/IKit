@@ -1,4 +1,4 @@
-#---------------------------------------
+﻿#---------------------------------------
 macro(IK_SetupProject MODE TARGET_NAME STR_TARGET_SOURCES STR_TARGET_LIBS)
   IK_PackageName(package_name)
   string(REPLACE " " ";" LIST_TARGET_SOURCES ${STR_TARGET_SOURCES})
@@ -228,12 +228,38 @@ function(IK_AddTarget)
     )
   endforeach()
 
-  # target lib
+  # target library files
   target_link_libraries(${target_name}
     PUBLIC ${ARG_LIB}
     INTERFACE ${ARG_LIB_INT}
     PRIVATE ${ARG_LIB_PVT}
   )
+
+ # target include files
+  foreach(inc ${ARG_INC})
+    get_filename_component(abs_inc ${inc} ABSOLUTE)
+    file(RELATIVE_PATH rel_inc ${PROJECT_SOURCE_DIR} ${abs_inc})
+    target_include_directories(${target_name} PUBLIC
+      $<BUILD_INTERFACE:${abs_inc}>
+      $<INSTALL_INTERFACE:${package_name}/${rel_inc}>
+    )
+  endforeach()
+    foreach(inc ${ARG_INC_PVT})
+    get_filename_component(abs_inc ${inc} ABSOLUTE)
+    file(RELATIVE_PATH rel_inc ${PROJECT_SOURCE_DIR} ${abs_inc})
+    target_include_directories(${target_name} PRIVATE
+      $<BUILD_INTERFACE:${abs_inc}>
+      $<INSTALL_INTERFACE:${package_name}/${rel_inc}>
+    )
+  endforeach()
+    foreach(inc ${ARG_INC_INT})
+    get_filename_component(abs_inc ${inc} ABSOLUTE)
+    file(RELATIVE_PATH rel_inc ${PROJECT_SOURCE_DIR} ${inc})
+    target_include_directories(${target_name} INTERFACE
+      $<BUILD_INTERFACE:${abs_inc}>
+      $<INSTALL_INTERFACE:${package_name}/${rel_inc}>
+    )
+  endforeach()
 
   # target compile option
   target_compile_options(${target_name}

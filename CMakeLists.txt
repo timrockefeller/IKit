@@ -11,21 +11,8 @@ IK_InitProject(${PROJECT_NAME})
 
 message(STATUS "[Project] ${PROJECT_NAME} ${PROJECT_VERSION}")
 
-include_directories (
-    ${PROJECT_SOURCE_DIR}/include
-    # ${CMAKE_BINARY_DIR}/config
-    # $ENV{XXX_INCLUDE_PATH}
-    # ...
-)
-
-link_directories (
-    ${PROJECT_SOURCE_DIR}/lib
-    # ${PROJECT_SOURCE_DIR}/lib/Gen
-    # $ENV{XXX_LIB_PATH}
-    # ...
-)
-
 IK_AddSubDirsRec(src)
+IK_AddSubDirsRec(include)
 
 IK_Export(
   TARGET

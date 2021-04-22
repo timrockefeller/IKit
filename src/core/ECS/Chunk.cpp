@@ -1,4 +1,5 @@
 #include <Ikit/ECS/details/Chunk.h>
+#include <algorithm>
 using namespace KTKR::ECS;
 using namespace std;
 

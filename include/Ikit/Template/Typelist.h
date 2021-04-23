@@ -35,8 +35,8 @@ using At_t = typename At<List, N>::type;
 
 template <typename List, size_t... Indices>
 struct Select;
-template <typename List, size_t... Indices>
-using Select_t = typename Select<List, Indices>::type;
+// template <typename List, size_t... Indices>
+// using Select_t = typename Select<List, Indices>::type;
 
 template <typename List>
 struct PopFront;

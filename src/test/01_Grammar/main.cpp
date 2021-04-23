@@ -1,5 +1,6 @@
 #include <IKit/ECS/details/Chunk.h>
 #include <Ikit/Template/Typelist.h>
+#include <Ikit/STL/ILog.h>
 #include <iostream>
 using namespace std;
 int main() {
@@ -24,6 +25,9 @@ int main() {
     static_assert(KTKR::Find_v<T, bool> == 1);
 
     // =================================================
+
+    KTKR::ILog(KTKR::LOG_DEBUG,KTKR::LOG_DEBUG,"Hello, %d", 2);
+
 
     return 0;
 }

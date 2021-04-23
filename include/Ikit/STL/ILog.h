@@ -12,13 +12,24 @@ namespace KTKR
         LOG_ERROR
     };
 
-    template <class... Args>
-    void ILog(DebugLogLevel console, DebugLogLevel base, const char *fmt, const Args &...args)
+    template <typename T>
+    void _ILog(T m)
     {
-        std::string buffer;
-        sprintf_s(buffer, fmt, std::forward(args));
+        std::cout << m << std::endl;
+    }
+
+    template <typename T, typename... Args>
+    void _ILog(T m, const Args &...msgs)
+    {
+        std::cout << m;
+        _ILog(msgs...);
+    }
+
+    template <typename... Args>
+    void ILog(DebugLogLevel console, DebugLogLevel base, const Args &...msgs)
+    {
         if (console <= base)
-            std::cout << fmt;
+            _ILog(msgs...);
     }
 
 } // namespace KTKR
